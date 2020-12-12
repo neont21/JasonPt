@@ -1,11 +1,11 @@
 [package]
 name = "jason_bot"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Pt J <peter.j@kakao.com>"]
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-serenity = { version = "0.9", default-features = false, features = ["client", "gateway", "rustls_backend", "model"] }
+serenity = { path = "../serenity", features = ["client", "gateway", "rustls_backend", "model", "framework", "standard_framework"] }
 tokio = { version = "0.2", features = ["macros"] }
