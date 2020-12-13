@@ -27,9 +27,19 @@ sample JSON data
 	"description": "This is a test data for embedding",
 	"colour": 14501908,
 	"fields": [
-		["title1", "content1", true], ["title2", "content2", true], ["title3", "content3", false],
+		["title1", "content1", true], ["title2", "content2", true], ["title3", "content3", false]
+	],
 	"bind": "default"
-	]
 }
 ```
+#### `say` is work!    
+requires argument of JSON data
+- `content` : (string) non-embed text (if you don't want it, just send empty string)
+- `bind` : (string) the channel to send message. default or channel tag (requires quotation marks)
 
+sample JSON data
+```json
+{
+	"content" : "the JSON data for the test",
+	"bind": "default"
+}

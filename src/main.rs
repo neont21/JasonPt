@@ -45,13 +45,13 @@ impl EventHandler for Handler {
 }
 
 #[group]
-#[commands(about, send)]
+#[commands(about)]
 struct General;
 
 #[group]
 #[owners_only]
 #[only_in(guilds)]
-#[commands(ping)]
+#[commands(ping, send, say)]
 struct Owner;
 
 // something response to `help` command
@@ -195,8 +195,9 @@ struct ToEmbed {
     bind: String,
 }
 
-
 #[command]
+#[only_in(guilds)]
+#[checks(Owner)]
 async fn send(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
     let to_embed: ToEmbed = serde_json::from_str(&args.rest())
         .expect("Input JSON");
@@ -216,6 +217,33 @@ async fn send(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
 
             e
         });
+
+        m
+    }).await?;
+
+    Ok(())
+}
+
+#[derive(Serialize, Deserialize)]
+struct ToSay {
+    content: String,
+    bind: String,
+}
+
+#[command]
+#[only_in(guilds)]
+#[checks(Owner)]
+async fn say(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
+    let to_say: ToSay = serde_json::from_str(&args.rest())
+        .expect("Input JSON");
+
+    let chan = match &to_say.bind[..] {
+        "default" => msg.channel_id,
+        other => ChannelId(String::from(&other[2..20]).parse::<u64>()?),
+    };
+
+    chan.send_message(&ctx.http, |m| {
+        m.content(&to_say.content);
 
         m
     }).await?;
