@@ -1,6 +1,6 @@
 [package]
 name = "jason_bot"
-version = "0.4.0"
+version = "0.5.0"
 authors = ["Pt J <peter.j@kakao.com>"]
 edition = "2018"
 

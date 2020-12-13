@@ -13,11 +13,11 @@ use serenity::{
     http::Http,
     model::{
         channel::Message,
-        gateway::Ready, id::UserId,
+        gateway::Ready, id::{
+            UserId, ChannelId,
+        },
     },
-    utils::{
-        content_safe, ContentSafeOptions, Colour,
-    },
+    utils::Colour,
     prelude::*,
 };
 
@@ -51,7 +51,7 @@ struct General;
 #[group]
 #[owners_only]
 #[only_in(guilds)]
-#[commands(bind, ping)]
+#[commands(ping)]
 struct Owner;
 
 // something response to `help` command
@@ -62,7 +62,6 @@ struct Owner;
 #[max_levenshtein_distance(3)]
 #[lacking_permissions = "Hide"]
 #[lacking_role = "Nothing"]
-#[wrong_channel = "Strike"]
 async fn my_help(
     context: &Context,
     msg: &Message,
@@ -178,13 +177,6 @@ async fn about(ctx: &Context, msg: &Message, _: Args) -> CommandResult {
 }
 
 #[command]
-async fn bind(ctx: &Context, msg: &Message, _: Args) -> CommandResult {
-    msg.channel_id.say(&ctx.http, "**TODO** 미구현 함수").await?;
-
-    Ok(())
-}
-
-#[command]
 #[only_in(guilds)]
 #[checks(Owner)]
 async fn ping(ctx: &Context, msg: &Message) -> CommandResult {
@@ -200,33 +192,21 @@ struct ToEmbed {
     description: String,
     colour: u32,
     fields: Vec<(String, String, bool)>,
+    bind: String,
 }
 
 
 #[command]
 async fn send(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
-    /*
-    let settings = if let Some(guild_id) = msg.guild_id {
-        ContentSafeOptions::default()
-            .clean_channel(false)
-            .display_as_member_from(guild_id)
-    } else {
-        ContentSafeOptions::default()
-            .clean_channel(false)
-            .clean_role(false)
-    };
-
-    let content = content_safe(&ctx.cache, &args.rest(), &settings).await;
-
-    // send to CURRENT channel
-    msg.channel_id.say(&ctx.http, &content).await?;
-    */
-    // IGNORE ABOVE HERE
-
     let to_embed: ToEmbed = serde_json::from_str(&args.rest())
         .expect("Input JSON");
 
-    msg.channel_id.send_message(&ctx.http, |m| {
+    let chan = match &to_embed.bind[..] {
+        "default" => msg.channel_id,
+        other => ChannelId(String::from(&other[2..20]).parse::<u64>()?),
+    };
+
+    chan.send_message(&ctx.http, |m| {
         m.content(&to_embed.content);
         m.embed(|e| {
             e.title(&to_embed.title);

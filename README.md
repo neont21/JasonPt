@@ -17,6 +17,7 @@ requires argument of JSON data
 - `description` : (string) description of the embed
 - `colour` : (integer) the left-side color of the embed
 - `fields` : (array of [String, String, Boolean]) the fields of the embed
+- `bind` : (string) the channel to send message. default or channel tag (requires quotation marks)
 
 sample JSON data
 ```json
@@ -26,9 +27,9 @@ sample JSON data
 	"description": "This is a test data for embedding",
 	"colour": 14501908,
 	"fields": [
-		["title1", "content1", true], ["title2", "content2", true], ["title3", "content3", false]
+		["title1", "content1", true], ["title2", "content2", true], ["title3", "content3", false],
+	"bind": "default"
 	]
 }
 ```
 
-#### `bind` has to implemented.    
