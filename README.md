@@ -6,11 +6,13 @@ Jason Bot JasonPt#2964
 ### Features
 - PREFIX: Bot Mention
 
-#### `ping` is work!    
+#### `ping`
 `ping` -> "Ping!"
-#### `about` is work!    
+
+#### `about`
 `about` -> introduce itself
-#### `send` is work!    
+
+#### `send`
 requires argument of JSON data    
 - `content` : (string) non-embed text (if you don't want it, just send empty string)
 - `title` : (string) title of the embed
@@ -32,7 +34,8 @@ sample JSON data
 	"bind": "default"
 }
 ```
-#### `say` is work!    
+
+#### `say`
 requires argument of JSON data
 - `content` : (string) non-embed text (if you don't want it, just send empty string)
 - `bind` : (string) the channel to send message. default or channel tag (requires quotation marks)
@@ -43,3 +46,19 @@ sample JSON data
 	"content" : "the JSON data for the test",
 	"bind": "default"
 }
+```
+
+#### `react`
+requires argument of JSON data
+- `c_id` : (integer) channel ID
+- `m_id` : (integer) message ID
+- `reactions` : (array of String) Emoji
+
+sample JSON data
+```json
+{
+"c_id" : 773540505266421812,
+"m_id" : 787729895257931837,
+"reactions" : [":new_moon:", ":last_quarter_moon:", ":full_moon:", ":boom:"]
+}
+```

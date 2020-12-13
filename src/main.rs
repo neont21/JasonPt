@@ -12,7 +12,9 @@ use serenity::{
     },
     http::Http,
     model::{
-        channel::Message,
+        channel::{
+            Message, ReactionType::Unicode,
+        },
         gateway::Ready, id::{
             UserId, ChannelId,
         },
@@ -51,7 +53,7 @@ struct General;
 #[group]
 #[owners_only]
 #[only_in(guilds)]
-#[commands(ping, send, say)]
+#[commands(ping, send, say, react)]
 struct Owner;
 
 // something response to `help` command
@@ -237,7 +239,7 @@ async fn say(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
     let to_say: ToSay = serde_json::from_str(&args.rest())
         .expect("Input JSON");
 
-    let chan = match &to_say.bind[..] {
+    let chan: ChannelId = match &to_say.bind[..] {
         "default" => msg.channel_id,
         other => ChannelId(String::from(&other[2..20]).parse::<u64>()?),
     };
@@ -248,6 +250,26 @@ async fn say(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
         m
     }).await?;
 
+    Ok(())
+}
+
+#[derive(Serialize, Deserialize)]
+struct ToReact {
+    c_id: u64,
+    m_id: u64,
+    reactions: Vec<String>,
+}
+
+#[command]
+#[only_in(guilds)]
+#[checks(Owner)]
+async fn react(ctx: &Context, _msg: &Message, args: Args) -> CommandResult {
+    let to_react: ToReact = serde_json::from_str(&args.rest())
+        .expect("Input JSON");
+
+    for reaction in to_react.reactions {
+        ctx.http.create_reaction(to_react.c_id, to_react.m_id, &Unicode(reaction)).await?;
+    }
     Ok(())
 }
 
