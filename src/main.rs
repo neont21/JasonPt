@@ -12,17 +12,17 @@ use serenity::{
     },
     http::Http,
     model::{
-        channel::Message, gateway::Ready, id::UserId
+        channel::Message,
+        gateway::Ready, id::UserId,
     },
     utils::{
-        content_safe, ContentSafeOptions,
+        content_safe, ContentSafeOptions, Colour,
     },
     prelude::*,
 };
 
-// for using data across the Shards
-use::tokio::sync::Mutex;
-
+// for JSON parsing
+use serde::{Deserialize, Serialize};
 
 struct ShardManagerContainer;
 impl TypeMapKey for ShardManagerContainer {
@@ -193,8 +193,19 @@ async fn ping(ctx: &Context, msg: &Message) -> CommandResult {
     Ok(())
 }
 
+#[derive(Serialize, Deserialize)]
+struct ToEmbed {
+    content: String,
+    title: String,
+    description: String,
+    colour: u32,
+    fields: Vec<(String, String, bool)>,
+}
+
+
 #[command]
 async fn send(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
+    /*
     let settings = if let Some(guild_id) = msg.guild_id {
         ContentSafeOptions::default()
             .clean_channel(false)
@@ -209,6 +220,25 @@ async fn send(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
 
     // send to CURRENT channel
     msg.channel_id.say(&ctx.http, &content).await?;
+    */
+    // IGNORE ABOVE HERE
+
+    let to_embed: ToEmbed = serde_json::from_str(&args.rest())
+        .expect("Input JSON");
+
+    msg.channel_id.send_message(&ctx.http, |m| {
+        m.content(&to_embed.content);
+        m.embed(|e| {
+            e.title(&to_embed.title);
+            e.description(&to_embed.description);
+            e.fields(to_embed.fields);
+            e.colour(Colour::new(to_embed.colour));
+
+            e
+        });
+
+        m
+    }).await?;
 
     Ok(())
 }

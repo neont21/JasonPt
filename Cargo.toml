@@ -1,6 +1,6 @@
 [package]
 name = "jason_bot"
-version = "0.3.0"
+version = "0.4.0"
 authors = ["Pt J <peter.j@kakao.com>"]
 edition = "2018"
 
@@ -9,3 +9,5 @@ edition = "2018"
 [dependencies]
 serenity = { path = "../serenity", features = ["client", "gateway", "rustls_backend", "model", "framework", "standard_framework"] }
 tokio = { version = "0.2", features = ["macros"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
