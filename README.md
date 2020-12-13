@@ -1,5 +1,8 @@
 Jason Bot JasonPt#2964
 ---
+Pt-customized Discord Bot
+Hosting for Kuding
+
 ### Environment Variables
 - `DISCORD_TOKEN` : Bot API Token
 
@@ -57,8 +60,8 @@ requires argument of JSON data
 sample JSON data
 ```json
 {
-"c_id" : 773540505266421812,
-"m_id" : 787729895257931837,
-"reactions" : [":new_moon:", ":last_quarter_moon:", ":full_moon:", ":boom:"]
+	"c_id" : 773540505266421812,
+	"m_id" : 787729895257931837,
+	"reactions" : [":new_moon:", ":last_quarter_moon:", ":full_moon:", ":boom:"]
 }
 ```
