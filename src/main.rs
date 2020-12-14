@@ -338,8 +338,8 @@ async fn say(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
 
 #[group]
 #[prefix("react")]
-#[description = "Sends the text to the channel"]
-#[summary = "Sends the text"]
+#[description = "Reacts to the message by emoji"]
+#[summary = "Reacts by emoji"]
 #[default_command(react)]
 #[commands(react_remove)]
 struct React;
@@ -387,7 +387,7 @@ async fn react_remove(ctx: &Context, _msg: &Message, args: Args) -> CommandResul
 #[command]
 #[owners_only]
 #[only_in(guilds)]
-#[description = "Reacts by emoji to the message"]
+#[description = "Reacts to the message by emoji"]
 #[required_permissions("ADMINISTRATOR")]
 async fn react(ctx: &Context, _msg: &Message, args: Args) -> CommandResult {
     let to_react: ToReact = serde_json::from_str(&args.rest())
