@@ -10,7 +10,7 @@ Hosting for Kuding
 - PREFIX: Bot Mention
 
 #### `ping`
-`ping` -> "Ping!"
+`ping` -> "Pong!"
 
 #### `about`
 `about` -> introduce itself
