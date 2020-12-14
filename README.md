@@ -16,6 +16,7 @@ Hosting for Kuding
 `about` -> introduce itself
 
 #### `send`
+sends the embed message to the channel    
 requires argument of JSON data    
 - `content` : (string) non-embed text (if you don't want it, just send empty string)
 - `title` : (string) title of the embed
@@ -58,6 +59,7 @@ sample JSON data
 ```
 
 #### `say`
+sends the text messaeg to the channel    
 requires argument of JSON data
 - `content` : (string) non-embed text (if you don't want it, just send empty string)
 - `bind` : (string) the channel to send message. default or channel tag (requires quotation marks)
@@ -84,15 +86,16 @@ sample JSON data
 ```
 
 #### `react`
+reacts to the message by emoji
 requires argument of JSON data
-- `c_id` : (integer) channel ID
+- `bind` : (string) the channel in which the message be
 - `m_id` : (integer) message ID
 - `reactions` : (array of String) Emoji
 
 sample JSON data
 ```json
 {
-	"c_id" : 773540505266421812,
+	"bind" : "default",
 	"m_id" : 787729895257931837,
 	"reactions" : [":new_moon:", ":last_quarter_moon:", ":full_moon:", ":boom:"]
 }
@@ -100,12 +103,27 @@ sample JSON data
 
 if you want to remove the reaction, use `react remove`    
 emoji that isn't used will be ignored    
+use same JSON format as `react`
 
 sample JSON data
 ```json
 {
-	"c_id" : 773540505266421812,
+	"bind" : "default",
 	"m_id" : 787729895257931837,
 	"reactions" : [":last_quarter_moon:", ":full_moon:"]
+}
+```
+
+#### `delete`
+deletes the message    
+requires argument of JSON data
+- `bind` : (string) the channel in which the message be
+- `m_id` : (integer) message ID
+
+sample JSON data
+```json
+{
+	"bind" : "default",
+	"m_id" : 787729895257931837
 }
 ```

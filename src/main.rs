@@ -42,7 +42,7 @@ struct General;
 #[group]
 #[owners_only]
 #[only_in(guilds)]
-#[commands(ping)]
+#[commands(ping, delete)]
 struct Owner;
 
 // something response to `help` command
@@ -346,7 +346,7 @@ struct React;
 
 #[derive(Serialize, Deserialize)]
 struct ToReact {
-    c_id: u64,
+    bind: String,
     m_id: u64,
     reactions: Vec<String>,
 }
@@ -357,9 +357,14 @@ struct ToReact {
 #[aliases("remove")]
 #[description = "Removes the reaction of the message"]
 #[required_permissions("ADMINISTRATOR")]
-async fn react_remove(ctx: &Context, _msg: &Message, args: Args) -> CommandResult {
+async fn react_remove(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
     let to_react: ToReact = serde_json::from_str(&args.rest())
         .expect("Input JSON");
+
+    let c_id: u64 = match &to_react.bind[..] {
+        "default" => *msg.channel_id.as_u64(),
+        other => String::from(&other[2..20]).parse::<u64>()?,
+    };
 
     let (_owners, bot_id) = match ctx.http.get_current_application_info().await {
         Ok(info) => {
@@ -378,7 +383,7 @@ async fn react_remove(ctx: &Context, _msg: &Message, args: Args) -> CommandResul
     };
 
     for reaction in to_react.reactions {
-        ctx.http.delete_reaction(to_react.c_id, to_react.m_id, Some(*bot_id.as_u64()), &Unicode(reaction)).await?;
+        ctx.http.delete_reaction(c_id, to_react.m_id, Some(*bot_id.as_u64()), &Unicode(reaction)).await?;
     }
 
     Ok(())
@@ -389,13 +394,40 @@ async fn react_remove(ctx: &Context, _msg: &Message, args: Args) -> CommandResul
 #[only_in(guilds)]
 #[description = "Reacts to the message by emoji"]
 #[required_permissions("ADMINISTRATOR")]
-async fn react(ctx: &Context, _msg: &Message, args: Args) -> CommandResult {
+async fn react(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
     let to_react: ToReact = serde_json::from_str(&args.rest())
         .expect("Input JSON");
 
+    let c_id: u64 = match &to_react.bind[..] {
+        "default" => *msg.channel_id.as_u64(),
+        other => String::from(&other[2..20]).parse::<u64>()?,
+    };
+
     for reaction in to_react.reactions {
-        ctx.http.create_reaction(to_react.c_id, to_react.m_id, &Unicode(reaction)).await?;
+        ctx.http.create_reaction(c_id, to_react.m_id, &Unicode(reaction)).await?;
     }
+
+    Ok(())
+}
+
+#[derive(Serialize, Deserialize)]
+struct ToDelete {
+    bind: String,
+    m_id: u64,
+}
+
+#[command]
+#[description = "Deletes the message"]
+async fn delete(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
+    let to_delete: ToDelete = serde_json::from_str(&args.rest())
+        .expect("Input JSON");
+
+    let chan: ChannelId = match &to_delete.bind[..] {
+        "default" => msg.channel_id,
+        other => ChannelId(String::from(&other[2..20]).parse::<u64>()?),
+    };
+
+    chan.delete_message(&ctx.http, MessageId(to_delete.m_id)).await?;
 
     Ok(())
 }
