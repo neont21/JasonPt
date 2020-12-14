@@ -1,10 +1,9 @@
 // fr Environment Variable
-use std::{collections::{HashMap, HashSet}, env, sync::Arc};
+use std::{collections::HashSet, env};
 
 // for Discord API
 use serenity::{
     async_trait,
-    client::bridge::gateway::ShardManager,
     framework::standard::{
         Args, CommandOptions, CommandResult, CommandGroup, DispatchError, HelpOptions, help_commands, Reason, StandardFramework, macros::{
             command, group, help, check, hook,
@@ -25,16 +24,6 @@ use serenity::{
 
 // for JSON parsing
 use serde::{Deserialize, Serialize};
-
-struct ShardManagerContainer;
-impl TypeMapKey for ShardManagerContainer {
-    type Value = Arc<Mutex<ShardManager>>;
-}
-
-struct CommandCounter;
-impl TypeMapKey for CommandCounter {
-    type Value = HashMap<String, u64>;
-}
 
 struct Handler;
 #[async_trait]
