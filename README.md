@@ -15,6 +15,8 @@ Hosting for Kuding
 #### `about`
 `about` -> introduce itself
 
+also called as `자기소개`
+
 #### `send`
 sends the embed message to the channel    
 requires argument of JSON data    
@@ -24,6 +26,8 @@ requires argument of JSON data
 - `colour` : (integer) the left-side color of the embed
 - `fields` : (array of [String, String, Boolean]) the fields of the embed
 - `bind` : (string) the channel to send message. default or channel tag (requires quotation marks)
+
+also called by `임베드`    
 
 sample JSON data
 ```json
@@ -42,6 +46,8 @@ sample JSON data
 if you want to modify the message, use `send modify`    
 which requires message ID
 - `m_id` : (integer) message ID to modify
+
+also called by `임베드 수정`
 
 sample JSON data
 ```json
@@ -64,6 +70,8 @@ requires argument of JSON data
 - `content` : (string) non-embed text (if you don't want it, just send empty string)
 - `bind` : (string) the channel to send message. default or channel tag (requires quotation marks)
 
+also called by `텍스트`
+
 sample JSON data
 ```json
 {
@@ -75,6 +83,8 @@ sample JSON data
 if you want to modify the message, use `say modify`    
 which requires message ID
 - `m_id` : (integer) message ID to modify
+
+also called by `텍스트 수정`
 
 sample JSON data
 ```json
@@ -92,6 +102,8 @@ requires argument of JSON data
 - `m_id` : (integer) message ID
 - `reactions` : (array of String) Emoji
 
+also called by `반응`
+
 sample JSON data
 ```json
 {
@@ -104,6 +116,8 @@ sample JSON data
 if you want to remove the reaction, use `react remove`    
 emoji that isn't used will be ignored    
 use same JSON format as `react`
+
+also called by `반응 해제`
 
 sample JSON data
 ```json
@@ -119,6 +133,8 @@ deletes the message
 requires argument of JSON data
 - `bind` : (string) the channel in which the message be
 - `m_id` : (integer) message ID
+
+also called by `삭제`
 
 sample JSON data
 ```json

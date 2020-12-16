@@ -166,6 +166,7 @@ async fn main() {
 }
 
 #[command]
+#[aliases("자기소개")]
 #[description = "Sends the information about the bot"]
 async fn about(ctx: &Context, msg: &Message, _: Args) -> CommandResult {
     msg.channel_id.say(&ctx.http, "안녕하세요, 제이슨입니다!").await?;
@@ -185,6 +186,7 @@ async fn ping(ctx: &Context, msg: &Message) -> CommandResult {
 
 #[group]
 #[prefix("send")]
+#[prefix("임베드")]
 #[description = "Sends the embed to the channel"]
 #[summary = "Sends the embed"]
 #[default_command(send)]
@@ -213,7 +215,7 @@ struct ToEditEmbed {
 }
 
 #[command]
-#[aliases("modify")]
+#[aliases("modify", "수정")]
 #[description = "Edits the embed to the channel"]
 #[required_permissions("ADMINISTRATOR")]
 async fn send_modify(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
@@ -273,6 +275,7 @@ async fn send(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
 
 #[group]
 #[prefix("say")]
+#[prefix("텍스트")]
 #[description = "Sends the text to the channel"]
 #[summary = "Sends the text"]
 #[default_command(say)]
@@ -295,7 +298,7 @@ struct ToEditSay {
 #[command]
 #[owners_only]
 #[only_in(guilds)]
-#[aliases("modify")]
+#[aliases("modify", "수정")]
 #[description = "Edits the text on the channel"]
 #[required_permissions("ADMINISTRATOR")]
 async fn say_modify(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
@@ -341,6 +344,7 @@ async fn say(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
 
 #[group]
 #[prefix("react")]
+#[prefix("반응")]
 #[description = "Reacts to the message by emoji"]
 #[summary = "Reacts by emoji"]
 #[default_command(react)]
@@ -357,7 +361,7 @@ struct ToReact {
 #[command]
 #[owners_only]
 #[only_in(guilds)]
-#[aliases("remove")]
+#[aliases("remove", "해제")]
 #[description = "Removes the reaction of the message"]
 #[required_permissions("ADMINISTRATOR")]
 async fn react_remove(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
@@ -420,6 +424,7 @@ struct ToDelete {
 }
 
 #[command]
+#[aliases("삭제")]
 #[description = "Deletes the message"]
 async fn delete(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
     let to_delete: ToDelete = serde_json::from_str(&args.rest())
@@ -436,6 +441,7 @@ async fn delete(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
 }
 
 #[command]
+#[aliases("활동")]
 #[description = "Sets the playing status"]
 async fn activity(ctx: &Context, _msg: &Message, args: Args) -> CommandResult {
     let name = args.message();
