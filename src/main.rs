@@ -14,7 +14,10 @@ use serenity::{
         channel::{
             Message, ReactionType::Unicode,
         },
-        gateway::Ready, id::{
+        gateway::{
+            Ready, Activity,
+        },
+        id::{
             UserId, ChannelId, MessageId,
         },
     },
@@ -42,7 +45,7 @@ struct General;
 #[group]
 #[owners_only]
 #[only_in(guilds)]
-#[commands(ping, delete)]
+#[commands(ping, delete, activity)]
 struct Owner;
 
 // something response to `help` command
@@ -428,6 +431,15 @@ async fn delete(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
     };
 
     chan.delete_message(&ctx.http, MessageId(to_delete.m_id)).await?;
+
+    Ok(())
+}
+
+#[command]
+#[description = "Sets the playing status"]
+async fn activity(ctx: &Context, _msg: &Message, args: Args) -> CommandResult {
+    let name = args.message();
+    ctx.set_activity(Activity::playing(&name)).await;
 
     Ok(())
 }
