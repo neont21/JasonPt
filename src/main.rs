@@ -5,24 +5,19 @@ use std::{collections::HashSet, env};
 use serenity::{
     async_trait,
     framework::standard::{
-        Args, CommandOptions, CommandResult, CommandGroup, DispatchError, HelpOptions, help_commands, Reason, StandardFramework, macros::{
-            command, group, help, check, hook,
-        },
+        help_commands,
+        macros::{check, command, group, help, hook},
+        Args, CommandGroup, CommandOptions, CommandResult, DispatchError, HelpOptions, Reason,
+        StandardFramework,
     },
     http::Http,
     model::{
-        channel::{
-            Message, ReactionType::Unicode,
-        },
-        gateway::{
-            Ready, Activity,
-        },
-        id::{
-            UserId, ChannelId, MessageId,
-        },
+        channel::{Message, ReactionType::Unicode},
+        gateway::{Activity, Ready},
+        id::{ChannelId, MessageId, UserId},
     },
-    utils::Colour,
     prelude::*,
+    utils::Colour,
 };
 
 // for JSON parsing
@@ -50,7 +45,7 @@ struct Owner;
 
 // something response to `help` command
 #[help]
-#[individual_command_tip="안녕하세요, 제이슨입니다!\n\n\
+#[individual_command_tip = "안녕하세요, 제이슨입니다!\n\n\
 각각의 명령어의 기능이 알고 싶다면 인자로 전달하면 됩니다."]
 #[command_not_found_text = "`{}`라는 명령어는 없는데요?"]
 #[max_levenshtein_distance(3)]
@@ -62,7 +57,7 @@ async fn my_help(
     args: Args,
     help_options: &'static HelpOptions,
     groups: &[&'static CommandGroup],
-    owners: HashSet<UserId>
+    owners: HashSet<UserId>,
 ) -> CommandResult {
     let _ = help_commands::with_embeds(context, msg, args, help_options, groups, owners).await;
 
@@ -72,8 +67,11 @@ async fn my_help(
 // whenever before responding the command
 #[hook]
 async fn before(_ctx: &Context, msg: &Message, command_name: &str) -> bool {
-    println!("Got command '{}' by user '{}'", command_name, msg.author.name);
-     true
+    println!(
+        "Got command '{}' by user '{}'",
+        command_name, msg.author.name
+    );
+    true
 }
 
 // whenever after responding the command
@@ -103,7 +101,10 @@ async fn dispatch_error(ctx: &Context, msg: &Message, error: DispatchError) {
     if let DispatchError::Ratelimited(duration) = error {
         let _ = msg
             .channel_id
-            .say(&ctx.http, &format!("Try this again in {} seconds.", duration.as_secs()))
+            .say(
+                &ctx.http,
+                &format!("Try this again in {} seconds.", duration.as_secs()),
+            )
             .await;
     }
 }
@@ -111,8 +112,7 @@ async fn dispatch_error(ctx: &Context, msg: &Message, error: DispatchError) {
 #[tokio::main]
 async fn main() {
     // Configure the client with your Discord bot token in the environment.
-    let token = env::var("DISCORD_TOKEN")
-        .expect("Expected a token in the environment");
+    let token = env::var("DISCORD_TOKEN").expect("Expected a token in the environment");
 
     let http = Http::new_with_token(&token);
 
@@ -128,18 +128,18 @@ async fn main() {
                 Ok(bot_id) => (owners, bot_id.id),
                 Err(why) => panic!("Could not access the bot id: {:?}", why),
             }
-        },
+        }
         Err(why) => panic!("Could not access application info: {:?}", why),
     };
 
     let framework = StandardFramework::new()
-        .configure(|c| c
-                   .with_whitespace(true)
-                   .on_mention(Some(bot_id))
-                   .prefix(&format!("<@!{}>", bot_id)[..])
-                   .delimiters(vec![", ", ","])
-                   .owners(owners)
-                   )
+        .configure(|c| {
+            c.with_whitespace(true)
+                .on_mention(Some(bot_id))
+                .prefix(&format!("<@!{}>", bot_id)[..])
+                .delimiters(vec![", ", ","])
+                .owners(owners)
+        })
         .before(before)
         .after(after)
         .unrecognised_command(unknown_command)
@@ -169,7 +169,9 @@ async fn main() {
 #[aliases("자기소개")]
 #[description = "Sends the information about the bot"]
 async fn about(ctx: &Context, msg: &Message, _: Args) -> CommandResult {
-    msg.channel_id.say(&ctx.http, "안녕하세요, 제이슨입니다!").await?;
+    msg.channel_id
+        .say(&ctx.http, "안녕하세요, 제이슨입니다!")
+        .await?;
 
     Ok(())
 }
@@ -219,8 +221,7 @@ struct ToEditEmbed {
 #[description = "Edits the embed to the channel"]
 #[required_permissions("ADMINISTRATOR")]
 async fn send_modify(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
-    let to_edit: ToEditEmbed = serde_json::from_str(&args.rest())
-        .expect("Input JSON");
+    let to_edit: ToEditEmbed = serde_json::from_str(&args.rest()).expect("Input JSON");
 
     let chan = match &to_edit.bind[..] {
         "default" => msg.channel_id,
@@ -239,7 +240,8 @@ async fn send_modify(ctx: &Context, msg: &Message, args: Args) -> CommandResult 
         });
 
         m
-    }).await?;
+    })
+    .await?;
 
     Ok(())
 }
@@ -248,8 +250,7 @@ async fn send_modify(ctx: &Context, msg: &Message, args: Args) -> CommandResult 
 #[description = "Sends the embed to the channel"]
 #[required_permissions("ADMINISTRATOR")]
 async fn send(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
-    let to_embed: ToEmbed = serde_json::from_str(&args.rest())
-        .expect("Input JSON");
+    let to_embed: ToEmbed = serde_json::from_str(&args.rest()).expect("Input JSON");
 
     let chan = match &to_embed.bind[..] {
         "default" => msg.channel_id,
@@ -268,7 +269,8 @@ async fn send(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
         });
 
         m
-    }).await?;
+    })
+    .await?;
 
     Ok(())
 }
@@ -302,8 +304,7 @@ struct ToEditSay {
 #[description = "Edits the text on the channel"]
 #[required_permissions("ADMINISTRATOR")]
 async fn say_modify(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
-    let to_edit: ToEditSay = serde_json::from_str(&args.rest())
-        .expect("Input JSON");
+    let to_edit: ToEditSay = serde_json::from_str(&args.rest()).expect("Input JSON");
 
     let chan: ChannelId = match &to_edit.bind[..] {
         "default" => msg.channel_id,
@@ -314,7 +315,8 @@ async fn say_modify(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
         m.content(&to_edit.content);
 
         m
-    }).await?;
+    })
+    .await?;
 
     Ok(())
 }
@@ -325,8 +327,7 @@ async fn say_modify(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
 #[description = "Sends the text to the channel"]
 #[required_permissions("ADMINISTRATOR")]
 async fn say(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
-    let to_say: ToSay = serde_json::from_str(&args.rest())
-        .expect("Input JSON");
+    let to_say: ToSay = serde_json::from_str(&args.rest()).expect("Input JSON");
 
     let chan: ChannelId = match &to_say.bind[..] {
         "default" => msg.channel_id,
@@ -337,7 +338,8 @@ async fn say(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
         m.content(&to_say.content);
 
         m
-    }).await?;
+    })
+    .await?;
 
     Ok(())
 }
@@ -365,8 +367,7 @@ struct ToReact {
 #[description = "Removes the reaction of the message"]
 #[required_permissions("ADMINISTRATOR")]
 async fn react_remove(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
-    let to_react: ToReact = serde_json::from_str(&args.rest())
-        .expect("Input JSON");
+    let to_react: ToReact = serde_json::from_str(&args.rest()).expect("Input JSON");
 
     let c_id: u64 = match &to_react.bind[..] {
         "default" => *msg.channel_id.as_u64(),
@@ -385,12 +386,19 @@ async fn react_remove(ctx: &Context, msg: &Message, args: Args) -> CommandResult
                 Ok(bot_id) => (owners, bot_id.id),
                 Err(why) => panic!("Could not access the bot id: {:?}", why),
             }
-        },
+        }
         Err(why) => panic!("Could not access application info: {:?}", why),
     };
 
     for reaction in to_react.reactions {
-        ctx.http.delete_reaction(c_id, to_react.m_id, Some(*bot_id.as_u64()), &Unicode(reaction)).await?;
+        ctx.http
+            .delete_reaction(
+                c_id,
+                to_react.m_id,
+                Some(*bot_id.as_u64()),
+                &Unicode(reaction),
+            )
+            .await?;
     }
 
     Ok(())
@@ -402,8 +410,7 @@ async fn react_remove(ctx: &Context, msg: &Message, args: Args) -> CommandResult
 #[description = "Reacts to the message by emoji"]
 #[required_permissions("ADMINISTRATOR")]
 async fn react(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
-    let to_react: ToReact = serde_json::from_str(&args.rest())
-        .expect("Input JSON");
+    let to_react: ToReact = serde_json::from_str(&args.rest()).expect("Input JSON");
 
     let c_id: u64 = match &to_react.bind[..] {
         "default" => *msg.channel_id.as_u64(),
@@ -411,7 +418,9 @@ async fn react(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
     };
 
     for reaction in to_react.reactions {
-        ctx.http.create_reaction(c_id, to_react.m_id, &Unicode(reaction)).await?;
+        ctx.http
+            .create_reaction(c_id, to_react.m_id, &Unicode(reaction))
+            .await?;
     }
 
     Ok(())
@@ -427,15 +436,15 @@ struct ToDelete {
 #[aliases("삭제")]
 #[description = "Deletes the message"]
 async fn delete(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
-    let to_delete: ToDelete = serde_json::from_str(&args.rest())
-        .expect("Input JSON");
+    let to_delete: ToDelete = serde_json::from_str(&args.rest()).expect("Input JSON");
 
     let chan: ChannelId = match &to_delete.bind[..] {
         "default" => msg.channel_id,
         other => ChannelId(String::from(&other[2..20]).parse::<u64>()?),
     };
 
-    chan.delete_message(&ctx.http, MessageId(to_delete.m_id)).await?;
+    chan.delete_message(&ctx.http, MessageId(to_delete.m_id))
+        .await?;
 
     Ok(())
 }
@@ -452,7 +461,12 @@ async fn activity(ctx: &Context, _msg: &Message, args: Args) -> CommandResult {
 
 #[check]
 #[name = "Owner"]
-async fn owner_check(_: &Context, msg: &Message, _: &mut Args, _: &CommandOptions) -> Result<(), Reason> {
+async fn owner_check(
+    _: &Context,
+    msg: &Message,
+    _: &mut Args,
+    _: &CommandOptions,
+) -> Result<(), Reason> {
     if msg.author.id != 488978655620366358 {
         return Err(Reason::User("Lacked owner permission".to_string()));
     }
