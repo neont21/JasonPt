@@ -13,9 +13,7 @@ use serenity::{
 use serde::{Deserialize, Serialize};
 
 #[group]
-#[owners_only]
 #[prefix("say")]
-// #[prefix("텍스트")]
 #[description = "Sends the text to the channel"]
 // #[summary = "Sends the text"]
 #[default_command(say)]
@@ -36,10 +34,8 @@ struct ToEditSay {
 }
 
 #[command]
-#[owners_only]
-#[only_in(guilds)]
+#[aliases("텍스트")]
 #[description = "Sends the text to the channel"]
-#[required_permissions("ADMINISTRATOR")]
 pub async fn say(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
     let to_say: ToSay = serde_json::from_str(&args.rest()).expect("Input JSON");
 
@@ -59,11 +55,8 @@ pub async fn say(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
 }
 
 #[command]
-#[owners_only]
-#[only_in(guilds)]
 #[aliases("modify", "수정")]
 #[description = "Edits the text on the channel"]
-#[required_permissions("ADMINISTRATOR")]
 pub async fn say_modify(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
     let to_edit: ToEditSay = serde_json::from_str(&args.rest()).expect("Input JSON");
 

@@ -13,9 +13,7 @@ use serenity::{
 };
 
 #[group]
-#[owners_only]
 #[prefix("send")]
-// #[prefix("임베드")]
 #[description = "Sends the embed to the channel"]
 // #[summary = "Sends the embed"]
 #[default_command(send)]
@@ -44,8 +42,8 @@ struct ToEditEmbed {
 }
 
 #[command]
+#[aliases("임베드")]
 #[description = "Sends the embed to the channel"]
-#[required_permissions("ADMINISTRATOR")]
 pub async fn send(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
     let to_embed: ToEmbed = serde_json::from_str(&args.rest()).expect("Input JSON");
 
@@ -75,7 +73,6 @@ pub async fn send(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
 #[command]
 #[aliases("modify", "수정")]
 #[description = "Edits the embed to the channel"]
-#[required_permissions("ADMINISTRATOR")]
 pub async fn send_modify(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
     let to_edit: ToEditEmbed = serde_json::from_str(&args.rest()).expect("Input JSON");
 

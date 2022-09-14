@@ -36,7 +36,7 @@ struct General;
 #[group]
 #[owners_only]
 #[only_in(guilds)]
-#[commands(ping, delete, activity)]
+#[commands(ping, activity)]
 struct Owner;
 
 // something response to `help` command
@@ -115,7 +115,10 @@ async fn main() {
         Ok(info) => {
             let mut owners = HashSet::new();
             if let Some(team) = info.team {
-                owners.insert(team.owner_user_id);
+                for team_member in team.members.iter() {
+                    owners.insert(team_member.user.id);
+                }
+                //owners.insert(team.owner_user_id);
             } else {
                 owners.insert(info.owner.id);
             }

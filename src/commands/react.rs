@@ -12,9 +12,7 @@ use serenity::{
 use serde::{Deserialize, Serialize};
 
 #[group]
-#[owners_only]
 #[prefix("react")]
-// #[prefix("반응")]
 #[description = "Reacts to the message by emoji"]
 // #[summary = "Reacts by emoji"]
 #[default_command(react)]
@@ -29,10 +27,8 @@ struct ToReact {
 }
 
 #[command]
-#[owners_only]
-#[only_in(guilds)]
+#[aliases("반응")]
 #[description = "Reacts to the message by emoji"]
-#[required_permissions("ADMINISTRATOR")]
 pub async fn react(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
     let to_react: ToReact = serde_json::from_str(&args.rest()).expect("Input JSON");
 
@@ -51,11 +47,8 @@ pub async fn react(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
 }
 
 #[command]
-#[owners_only]
-#[only_in(guilds)]
 #[aliases("remove", "해제")]
 #[description = "Removes the reaction of the message"]
-#[required_permissions("ADMINISTRATOR")]
 pub async fn react_remove(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
     let to_react: ToReact = serde_json::from_str(&args.rest()).expect("Input JSON");
 
