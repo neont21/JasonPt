@@ -15,9 +15,9 @@ use serde::{Deserialize, Serialize};
 #[group]
 #[owners_only]
 #[prefix("say")]
-#[prefix("텍스트")]
+// #[prefix("텍스트")]
 #[description = "Sends the text to the channel"]
-#[summary = "Sends the text"]
+// #[summary = "Sends the text"]
 #[default_command(say)]
 #[commands(say_modify)]
 pub struct Say;

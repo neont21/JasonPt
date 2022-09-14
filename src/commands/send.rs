@@ -15,9 +15,9 @@ use serenity::{
 #[group]
 #[owners_only]
 #[prefix("send")]
-#[prefix("임베드")]
+// #[prefix("임베드")]
 #[description = "Sends the embed to the channel"]
-#[summary = "Sends the embed"]
+// #[summary = "Sends the embed"]
 #[default_command(send)]
 #[commands(send_modify)]
 pub struct Send;

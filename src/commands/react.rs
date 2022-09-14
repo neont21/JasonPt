@@ -14,9 +14,9 @@ use serde::{Deserialize, Serialize};
 #[group]
 #[owners_only]
 #[prefix("react")]
-#[prefix("반응")]
+// #[prefix("반응")]
 #[description = "Reacts to the message by emoji"]
-#[summary = "Reacts by emoji"]
+// #[summary = "Reacts by emoji"]
 #[default_command(react)]
 #[commands(react_remove)]
 pub struct React;

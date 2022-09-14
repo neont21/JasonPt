@@ -131,8 +131,8 @@ async fn main() {
         .configure(|c| {
             c.with_whitespace(true)
                 .on_mention(Some(bot_id))
-                .prefix(&format!("<@!{}>", bot_id)[..])
-                .delimiters(vec![", ", ","])
+                .prefix(&format!("<@{}>", bot_id)[..])
+                .delimiters(vec![", ", ",", " "])
                 .owners(owners)
         })
         .before(before)
